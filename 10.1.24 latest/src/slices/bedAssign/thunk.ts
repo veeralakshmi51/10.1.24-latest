@@ -7,7 +7,7 @@ const successCode = 'MHC - 0200'
 export const getAllBedAssign = async (dispatch: any, orgId: string) => {
   dispatch(isLoading());
   try {
-    const response = await axios.get(`${baseURL}/Q15Bed/create/getAll/orgId?orgId=${orgId}`);
+    const response = await axios.get(`${baseURL}/Q15Bed/ByAvailableBedByOrgID/${orgId}`);
     console.log('API all bed response', response.data)
     if (response.data.message.code === successCode) {
       dispatch(getBedAssignSuccess(response.data.data));
@@ -19,7 +19,6 @@ export const getAllBedAssign = async (dispatch: any, orgId: string) => {
     console.error('API error:', error);
   }
 };
-
 
 export const deleteBedAssignDetails = (id:string,org: string) => async (dispatch: any) => {
     dispatch(isLoading());

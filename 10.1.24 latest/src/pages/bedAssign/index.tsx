@@ -26,7 +26,8 @@ import {
   Badge,
   Input,
 } from "reactstrap";
-
+import ReactPaginate from "react-paginate";
+import "./bedassign.css";
 interface FormData {
   id: string;
   bedId: string;
@@ -52,7 +53,10 @@ const BedAssign: React.FC = () => {
     pid: selectedPatientId || "",
     orgId: organization,
   });
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const [perPage] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
+  const totalPages = Math.ceil(totalItems / perPage);
   const [patients, setPatients] = useState<any[]>([]);
   const handlePatientChange = (selectedPatientId: string) => {
     setBedAssignedData((prevData) => ({ ...prevData, pid: selectedPatientId }));
@@ -148,7 +152,9 @@ const BedAssign: React.FC = () => {
       }
     }
   };
-
+  const handlePageClick = (selectedPage: { selected: number }) => {
+    setCurrentPage(selectedPage.selected);
+  };
   return (
     <div className="table-container">
       <div className="heading1">
@@ -169,15 +175,15 @@ const BedAssign: React.FC = () => {
           <Row xs="1" md="8" lg="6">
             {Array.isArray(bedAssignData) && bedAssignData.length > 0 ? (
               bedAssignData.map((bedassign: any, index: number) => (
-                <Col
-                  key={index}
-                  className="mb-2"
-                  onClick={() => handleClick(bedassign)}
-                  
-                >
+                <Col>
                   <div className="bed-assignment-box">
                     <Card className="mb-3" color="primary" outline>
-                      <CardBody>
+                      <CardBody
+                        key={index}
+                        className="mb-2"
+                        onClick={() => handleClick(bedassign)}
+                        style={{cursor:'pointer'}}
+                      >
                         <CardTitle tag="h6">
                           RoomNo: {bedassign.roomNo}
                         </CardTitle>
@@ -197,7 +203,7 @@ const BedAssign: React.FC = () => {
                           icon={faTrash}
                           className="text-danger outline"
                           onClick={() => handleDelete(bedassign.id)}
-                          style={{ cursor: "pointer",marginLeft:'60px' }}
+                          style={{ cursor: "pointer", marginLeft: "60px" }}
                         />
                       </CardFooter>
                     </Card>
@@ -208,6 +214,17 @@ const BedAssign: React.FC = () => {
               <p>No bed assignments available.</p>
             )}
           </Row>
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            activeClassName={"active"}
+          />
         </div>
       )}
       <Modal isOpen={editModal} toggle={() => setEditModal(false)}>
@@ -232,7 +249,8 @@ const BedAssign: React.FC = () => {
                 <option value="">Select Patient</option>
                 {patients.map((patient) => (
                   <option key={patient.id} value={patient.id}>
-                    {patient.id}
+                    {patient.basicDetails[0].name[0].given}{" "}
+                    {patient.basicDetails[0].name[0].family}
                   </option>
                 ))}
               </Input>

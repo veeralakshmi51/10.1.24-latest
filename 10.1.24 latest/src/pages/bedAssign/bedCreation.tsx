@@ -11,6 +11,7 @@ interface FormData {
   roomNo: string;
   bedNo: string;
    orgId: string,
+   available:boolean,
 }
 const BedCreation = () => {
   const { organization } = useSelector((state: any) => state.Login);
@@ -21,6 +22,7 @@ const BedCreation = () => {
     roomNo: "",
     bedNo: "",
     orgId:organization,
+    available:true,
   });
 
   const handleSave = async () => {
@@ -30,6 +32,7 @@ const BedCreation = () => {
       roomNo: formData.roomNo,
       bedNo: formData.bedNo,
       orgId:formData.orgId,
+      available:formData.available
     };
     try {
       const response = await axios.post(
